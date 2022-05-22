@@ -23,7 +23,7 @@
     "typescript": "^4.6.4",
     "web-vitals": "^2.1.4"
   },
-  "homepage": "https://clean-playlists.herokuapp.com/",
+  "homepage": "https://playlist-cleanse.herokuapp.com/",
   "proxy": "http://localhost:8888",
   "scripts": {
     "start": "react-scripts start",
