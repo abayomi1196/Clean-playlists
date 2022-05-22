@@ -1,6 +1,7 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, ".env") });
 const express = require("express");
+const expressSession = require("express-session");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
@@ -75,6 +76,14 @@ app
   .use(morganMiddleware)
   .use(passport.initialize())
   .use(express.static(path.join(__dirname, "./client/build")));
+
+app.use(
+  expressSession({
+    secret: "This is one hell of a secret",
+    resave: false,
+    saveUninitialized: false
+  })
+);
 
 app.get("/", function (req, res) {
   res.render(path.resolve(__dirname, "./client/build", "index.html"));
