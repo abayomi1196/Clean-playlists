@@ -147,9 +147,9 @@ app.get("api/refresh_token", function (req, res) {
   });
 });
 
-// app.get("*", function (req, res) {
-//   res.sendFile(path.resolve(__dirname, "./client/public", "index.html"));
-// });
+app.get("*", function (req, res) {
+  res.sendFile(path.resolve(__dirname, "./client/public", "index.html"));
+});
 
 app.listen(PORT, function () {
   console.warn(`Node cluster worker ${process.pid}: listening on port ${PORT}`);
