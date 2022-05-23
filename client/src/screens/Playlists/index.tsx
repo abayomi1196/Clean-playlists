@@ -102,7 +102,7 @@ function Playlists() {
     playlists && (
       <Container>
         <Profile>
-          {profile.images && (
+          {profile.images && profile.images[0].url && (
             <img src={profile.images[0].url} alt={profile.display_name} />
           )}
           {profile.external_urls && (
