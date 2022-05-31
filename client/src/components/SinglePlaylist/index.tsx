@@ -73,7 +73,14 @@ function SinglePlaylist({
   return (
     <Wrapper>
       <a href={playlist.external_urls.spotify} target='_blank' rel='noreferrer'>
-        <img src={playlist.images[0].url} alt={playlist.name} />
+        <img
+          src={
+            playlist.images[0]
+              ? playlist.images[0].url
+              : "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MTd8fHxlbnwwfHx8fA%3D%3D&w=1000&q=80"
+          }
+          alt={playlist.name || "Unknown playlist"}
+        />
       </a>
 
       <h4>
@@ -82,7 +89,7 @@ function SinglePlaylist({
           target='_blank'
           rel='noreferrer'
         >
-          {playlist.name}
+          {playlist.name || "Unknown playlist"}
         </a>
       </h4>
       <p>{playlist.tracks.total} Tracks</p>
