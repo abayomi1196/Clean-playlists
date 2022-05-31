@@ -183,7 +183,7 @@ export const findCleanSongs = async (tracks: SingleTrack[]) => {
           return false;
         });
       } catch (err) {
-        console.log(err, "Error occurred when searching for songs");
+        console.log(err, "Error occurred searching for songs");
       }
     } else {
       cleanSongs.push({
