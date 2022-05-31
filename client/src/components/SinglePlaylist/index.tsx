@@ -94,8 +94,11 @@ function SinglePlaylist({
       </h4>
       <p>{playlist.tracks.total} Tracks</p>
 
-      <button onClick={() => handleConvertPlaylist(playlist.href)}>
-        Purify
+      <button
+        onClick={() => handleConvertPlaylist(playlist.href)}
+        disabled={playlist.name.includes("(clean)")}
+      >
+        {playlist.name.includes("(clean)") ? "Purified" : "Purify"}
       </button>
     </Wrapper>
   );

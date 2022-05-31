@@ -27,6 +27,7 @@ export const Wrapper = styled.div(() => [
       button {
         ${tw`bg-green-700 py-1.5 px-5 text-gray-100 rounded-sm mt-auto  transition-all
         hover:(bg-green-600 text-gray-200)
+        disabled:(bg-gray-400 cursor-not-allowed text-gray-100)
         `}
       }
     }
