@@ -10,7 +10,7 @@ import {
   setTokens,
   getProfileFollowing
 } from "api/Spotify";
-
+import GitOcto from "components/GitOcto";
 import SinglePlaylist from "components/SinglePlaylist";
 import {
   Container,
@@ -101,6 +101,7 @@ function Playlists() {
     profile &&
     playlists && (
       <Container>
+        <GitOcto />
         <Profile>
           {profile.images && profile.images[0] && profile.images[0].url && (
             <img src={profile.images[0].url} alt={profile.display_name} />
