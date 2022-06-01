@@ -13,6 +13,16 @@ export const Profile = styled.div(() => [
 
   css`
     & {
+      .no-user-wrapper {
+        ${tw`p-4 rounded-full border-2 border-white`}
+
+        svg {
+          fill: white;
+          height: 86px;
+          width: 86px;
+        }
+      }
+
       img {
         ${tw`w-40 object-fill rounded-full`}
       }

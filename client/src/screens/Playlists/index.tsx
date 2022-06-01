@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Audio, ThreeDots } from "react-loader-spinner";
 import Swal from "sweetalert2";
 
+import { ReactComponent as SpotifyIcon } from "assets/spotify_icon.svg";
+import { ReactComponent as NoUserIcon } from "assets/user_icon.svg";
 import { Tokens, UserProfile, SingleUserPlaylist } from "utils/types";
 import {
   getProfile,
@@ -103,8 +105,12 @@ function Playlists() {
       <Container>
         <GitOcto />
         <Profile>
-          {profile.images && profile.images[0] && profile.images[0].url && (
+          {profile.images && profile.images[0] && profile.images[0].url ? (
             <img src={profile.images[0].url} alt={profile.display_name} />
+          ) : (
+            <div className='no-user-wrapper'>
+              <NoUserIcon />
+            </div>
           )}
           {profile.external_urls && (
             <h1>
