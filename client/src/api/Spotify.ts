@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { delay } from "../utils/helpers";
+import { delay } from "utils/helpers";
 import {
   Tokens,
   UserProfile,
@@ -8,7 +8,7 @@ import {
   SingleUserPlaylist,
   SingleTrack,
   PlaylistTracks
-} from "../utils/types";
+} from "utils/types";
 
 // intercept errors to account for expired tokens
 axios.interceptors.response.use(
@@ -32,17 +32,109 @@ axios.interceptors.response.use(
   }
 );
 
-let tokens: Tokens | null = null;
+// TOKENS ************************************************
+let tokens: Tokens = {} as Tokens;
 
 export const setTokens = (incomingTokens: Tokens) => {
   tokens = incomingTokens;
+  window.localStorage.setItem("spotify_token_timestamp", String(Date.now()));
+  window.localStorage.setItem("spotify_access_token", tokens.accessToken);
+  window.localStorage.setItem("spotify_refresh_token", tokens.refreshToken);
+};
+
+const EXPIRATION_TIME = 3600 * 1000; // 3600 seconds * 1000 = 1 hour in milliseconds
+
+const setLocalAccessToken = (token: string) => {
+  window.localStorage.setItem("spotify_token_timestamp", String(Date.now()));
+  window.localStorage.setItem("spotify_access_token", token);
+};
+
+const setLocalRefreshToken = (token: string) =>
+  window.localStorage.setItem("spotify_refresh_token", token);
+
+const getTokenTimestamp = () =>
+  window.localStorage.getItem("spotify_token_timestamp") as string;
+
+const getLocalAccessToken = () =>
+  window.localStorage.getItem("spotify_access_token");
+
+const getLocalRefreshToken = () =>
+  window.localStorage.getItem("spotify_refresh_token");
+
+// Refresh the token
+const refreshAccessToken = async () => {
+  try {
+    const { data } = await axios.get(
+      `/refresh_token?refresh_token=${getLocalRefreshToken()}`
+    );
+    const { access_token } = data;
+    setLocalAccessToken(access_token);
+    window.location.reload();
+    return;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+// get and parse query params of document cookie into relevant tokens
+export const getTokens = (): Tokens => {
+  const cookieObj = document.cookie.split("; ").reduce((prev: any, current) => {
+    const [name, ...value] = current.split("=");
+    prev[name] = value.join("=");
+    return prev;
+  }, {});
+
+  const tokens: Tokens = cookieObj.authInfo
+    ? JSON.parse(decodeURIComponent(cookieObj.authInfo))
+    : null;
+
+  if (tokens === null) {
+    console.error(tokens);
+    refreshAccessToken();
+  }
+
+  // If token has expired
+  if (Date.now() - +getTokenTimestamp() > EXPIRATION_TIME) {
+    console.warn("Access token has expired, refreshing...");
+    refreshAccessToken();
+  }
+
+  const localAccessToken = getLocalAccessToken();
+
+  // If there is no ACCESS token in local storage, set it and return `access_token` from params
+  if (
+    (!localAccessToken || localAccessToken === "undefined") &&
+    tokens.accessToken
+  ) {
+    setLocalAccessToken(tokens.accessToken);
+    setLocalRefreshToken(tokens.refreshToken);
+  }
+
+  return tokens;
+};
+
+export const logout = () => {
+  window.localStorage.removeItem("spotify_token_timestamp");
+  window.localStorage.removeItem("spotify_access_token");
+  window.localStorage.removeItem("spotify_refresh_token");
+  window.location.href =
+    process.env.NODE_ENV !== "production"
+      ? "http://localhost:3000"
+      : "https://spotify-purify.herokuapp.com";
+};
+
+// API CALLS **********************************************
+
+const parsedTokens = getTokens();
+
+const headers = {
+  Authorization: `Bearer ${parsedTokens.accessToken}`,
+  "Content-Type": "application/json"
 };
 
 export const getProfile = async (): Promise<UserProfile> => {
   const res: AxiosResponse = await axios.get("https://api.spotify.com/v1/me/", {
-    headers: {
-      Authorization: `Bearer ${tokens?.accessToken}`
-    }
+    headers
   });
   return res.data;
 };
@@ -53,9 +145,7 @@ export const getProfileFollowing = async (): Promise<{
   const res: AxiosResponse = await axios.get(
     "https://api.spotify.com/v1/me/following?type=artist",
     {
-      headers: {
-        Authorization: `Bearer ${tokens?.accessToken}`
-      }
+      headers
     }
   );
   return res.data;
@@ -68,9 +158,7 @@ export const getPlaylists = async () => {
     const res: AxiosResponse = await axios.get(
       "https://api.spotify.com/v1/me/playlists",
       {
-        headers: {
-          Authorization: `Bearer ${tokens?.accessToken}`
-        }
+        headers
       }
     );
 
@@ -84,9 +172,7 @@ export const getPlaylists = async () => {
     while (calls > 1) {
       try {
         const res: AxiosResponse = await axios.get(next_url, {
-          headers: {
-            Authorization: `Bearer ${tokens?.accessToken}`
-          }
+          headers
         });
 
         const playlistData = res.data;
@@ -112,9 +198,7 @@ export const getPlaylistTracks = async (url: string) => {
 
   try {
     const response: AxiosResponse = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${tokens?.accessToken}`
-      }
+      headers
     });
 
     const playlistData: PlaylistTracks = response.data;
@@ -129,9 +213,7 @@ export const getPlaylistTracks = async (url: string) => {
       while (calls > 1) {
         if (next_url) {
           let response: AxiosResponse = await axios.get(next_url, {
-            headers: {
-              Authorization: `Bearer ${tokens?.accessToken}`
-            }
+            headers
           });
 
           let moreSongs = response.data;
@@ -158,9 +240,7 @@ export const findCleanSongs = async (tracks: SingleTrack[]) => {
         const res: AxiosResponse = await axios.get(
           `https://api.spotify.com/v1/search?q=${track.track.artists[0].name} ${track.track.name}&type=track`,
           {
-            headers: {
-              Authorization: `Bearer ${tokens?.accessToken}`
-            }
+            headers
           }
         );
 
@@ -206,9 +286,7 @@ export const createNewPlaylist = async (prevName: string, userId: string) => {
       description: "Purified using SpotifyPurify"
     },
     {
-      headers: {
-        Authorization: `Bearer ${tokens?.accessToken}`
-      }
+      headers
     }
   );
 
@@ -246,9 +324,7 @@ export const addCleanSongsToPlaylist = async ({
           uris: uri.map((track) => `spotify:track:${track.id}`)
         },
         {
-          headers: {
-            Authorization: `Bearer ${tokens?.accessToken}`
-          }
+          headers
         }
       )
     );

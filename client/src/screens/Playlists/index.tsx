@@ -5,12 +5,13 @@ import Swal from "sweetalert2";
 
 import { ReactComponent as SpotifyIcon } from "assets/spotify_icon.svg";
 import { ReactComponent as NoUserIcon } from "assets/user_icon.svg";
-import { Tokens, UserProfile, SingleUserPlaylist } from "utils/types";
+import { UserProfile, SingleUserPlaylist } from "utils/types";
 import {
   getProfile,
   getPlaylists,
   setTokens,
-  getProfileFollowing
+  getProfileFollowing,
+  getTokens
 } from "api/Spotify";
 import GitOcto from "components/GitOcto";
 import SinglePlaylist from "components/SinglePlaylist";
@@ -21,20 +22,6 @@ import {
   PlaylistsWrapper,
   ConvertingWrapper
 } from "./styles";
-
-const getTokens = (): Tokens => {
-  const cookieObj = document.cookie.split("; ").reduce((prev: any, current) => {
-    const [name, ...value] = current.split("=");
-    prev[name] = value.join("=");
-    return prev;
-  }, {});
-
-  const tokens: Tokens = cookieObj.authInfo
-    ? JSON.parse(decodeURIComponent(cookieObj.authInfo))
-    : null;
-
-  return tokens;
-};
 
 function Playlists() {
   const navigate = useNavigate();
