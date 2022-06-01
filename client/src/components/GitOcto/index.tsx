@@ -1,6 +1,6 @@
 import styles from "./styles.module.css";
 
-function GithubOcto() {
+function GitOcto() {
   return (
     <a
       href='https://github.com/abayomi1196/Clean-playlists'
@@ -41,4 +41,4 @@ function GithubOcto() {
   );
 }
 
-export default GithubOcto;
+export default GitOcto;

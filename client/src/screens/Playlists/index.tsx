@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { Audio, ThreeDots } from "react-loader-spinner";
 import Swal from "sweetalert2";
 
-import { Tokens, UserProfile, SingleUserPlaylist } from "utils/types";
+import { ReactComponent as NoUserIcon } from "assets/user_icon.svg";
+import { UserProfile, SingleUserPlaylist } from "utils/types";
 import {
   getProfile,
   getPlaylists,
-  setTokens,
-  getProfileFollowing
+  getProfileFollowing,
+  logout
 } from "api/Spotify";
-import GithubOcto from "components/GitOcto";
+import GitOcto from "components/GitOcto";
 import SinglePlaylist from "components/SinglePlaylist";
 import {
   Container,
@@ -19,20 +20,6 @@ import {
   PlaylistsWrapper,
   ConvertingWrapper
 } from "./styles";
-
-const getTokens = (): Tokens => {
-  const cookieObj = document.cookie.split("; ").reduce((prev: any, current) => {
-    const [name, ...value] = current.split("=");
-    prev[name] = value.join("=");
-    return prev;
-  }, {});
-
-  const tokens: Tokens = cookieObj.authInfo
-    ? JSON.parse(decodeURIComponent(cookieObj.authInfo))
-    : null;
-
-  return tokens;
-};
 
 function Playlists() {
   const navigate = useNavigate();
@@ -66,15 +53,6 @@ function Playlists() {
       }
     };
 
-    const tokens = getTokens();
-
-    if (!tokens) {
-      navigate("/");
-      return;
-    }
-
-    setTokens(tokens);
-
     fetchData();
   }, [navigate]);
 
@@ -101,10 +79,14 @@ function Playlists() {
     profile &&
     playlists && (
       <Container>
-        <GithubOcto />
+        <GitOcto />
         <Profile>
-          {profile.images && profile.images[0] && profile.images[0].url && (
+          {profile.images && profile.images[0] && profile.images[0].url ? (
             <img src={profile.images[0].url} alt={profile.display_name} />
+          ) : (
+            <div className='no-user-wrapper'>
+              <NoUserIcon />
+            </div>
           )}
           {profile.external_urls && (
             <h1>
@@ -134,6 +116,8 @@ function Playlists() {
               <p>Playlists</p>
             </div>
           </div>
+
+          <button onClick={() => logout()}>Logout</button>
         </Profile>
 
         <PlaylistsWrapper>

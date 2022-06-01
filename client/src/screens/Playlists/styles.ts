@@ -13,6 +13,16 @@ export const Profile = styled.div(() => [
 
   css`
     & {
+      .no-user-wrapper {
+        ${tw`p-4 rounded-full border-2 border-white`}
+
+        svg {
+          fill: white;
+          height: 86px;
+          width: 86px;
+        }
+      }
+
       img {
         ${tw`w-40 object-fill rounded-full`}
       }
@@ -37,6 +47,17 @@ export const Profile = styled.div(() => [
             ${tw`text-gray-300 font-bold uppercase text-xs`}
           }
         }
+      }
+
+      button {
+        ${tw`text-white border-2 border-white mt-8 py-3 px-8 text-xs font-bold uppercase text-center
+        hover:(bg-white bg-opacity-20 text-gray-300)
+        focus:(text-gray-200 outline-none)
+        active:(bg-gray-100 outline-none bg-opacity-30)
+        focus-visible:(ring-offset-2 ring-gray-700 outline-none)
+        `}
+        border-radius: 30px;
+        letter-spacing: 1px;
       }
     }
   `
