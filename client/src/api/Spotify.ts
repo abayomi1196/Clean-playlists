@@ -33,7 +33,7 @@ axios.interceptors.response.use(
 );
 
 // TOKENS ************************************************
-let tokens: Tokens = {} as Tokens;
+let tokens: Tokens | null = {} as Tokens;
 
 export const setTokens = (incomingTokens: Tokens) => {
   tokens = incomingTokens;
@@ -49,8 +49,9 @@ const setLocalAccessToken = (token: string) => {
   window.localStorage.setItem("spotify_access_token", token);
 };
 
-const setLocalRefreshToken = (token: string) =>
+const setLocalRefreshToken = (token: string) => {
   window.localStorage.setItem("spotify_refresh_token", token);
+};
 
 const getTokenTimestamp = () =>
   window.localStorage.getItem("spotify_token_timestamp") as string;
@@ -88,14 +89,12 @@ export const getTokens = (): Tokens => {
     ? JSON.parse(decodeURIComponent(cookieObj.authInfo))
     : null;
 
-  if (tokens === null) {
-    console.error(tokens);
-    refreshAccessToken();
-  }
-
   // If token has expired
-  if (Date.now() - +getTokenTimestamp() > EXPIRATION_TIME) {
-    console.warn("Access token has expired, refreshing...");
+  if (
+    getTokenTimestamp() &&
+    Date.now() - +getTokenTimestamp() > EXPIRATION_TIME
+  ) {
+    console.log("refreshing here");
     refreshAccessToken();
   }
 
@@ -104,7 +103,7 @@ export const getTokens = (): Tokens => {
   // If there is no ACCESS token in local storage, set it and return `access_token` from params
   if (
     (!localAccessToken || localAccessToken === "undefined") &&
-    tokens.accessToken
+    tokens?.accessToken
   ) {
     setLocalAccessToken(tokens.accessToken);
     setLocalRefreshToken(tokens.refreshToken);
@@ -114,9 +113,16 @@ export const getTokens = (): Tokens => {
 };
 
 export const logout = () => {
+  let delete_cookie = function (name: string) {
+    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+  };
+
+  delete_cookie("authInfo");
+
   window.localStorage.removeItem("spotify_token_timestamp");
   window.localStorage.removeItem("spotify_access_token");
   window.localStorage.removeItem("spotify_refresh_token");
+
   window.location.href =
     process.env.NODE_ENV !== "production"
       ? "http://localhost:3000"
@@ -128,7 +134,7 @@ export const logout = () => {
 const parsedTokens = getTokens();
 
 const headers = {
-  Authorization: `Bearer ${parsedTokens.accessToken}`,
+  Authorization: `Bearer ${parsedTokens?.accessToken}`,
   "Content-Type": "application/json"
 };
 

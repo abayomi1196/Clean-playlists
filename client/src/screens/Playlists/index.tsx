@@ -3,15 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Audio, ThreeDots } from "react-loader-spinner";
 import Swal from "sweetalert2";
 
-import { ReactComponent as SpotifyIcon } from "assets/spotify_icon.svg";
 import { ReactComponent as NoUserIcon } from "assets/user_icon.svg";
 import { UserProfile, SingleUserPlaylist } from "utils/types";
 import {
   getProfile,
   getPlaylists,
-  setTokens,
   getProfileFollowing,
-  getTokens
+  logout
 } from "api/Spotify";
 import GitOcto from "components/GitOcto";
 import SinglePlaylist from "components/SinglePlaylist";
@@ -54,15 +52,6 @@ function Playlists() {
         setIsLoading(false);
       }
     };
-
-    const tokens = getTokens();
-
-    if (!tokens) {
-      navigate("/");
-      return;
-    }
-
-    setTokens(tokens);
 
     fetchData();
   }, [navigate]);
@@ -127,6 +116,8 @@ function Playlists() {
               <p>Playlists</p>
             </div>
           </div>
+
+          <button onClick={() => logout()}>Logout</button>
         </Profile>
 
         <PlaylistsWrapper>
