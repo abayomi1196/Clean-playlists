@@ -1,7 +1,19 @@
 import tw, { styled, css } from "twin.macro";
 
 export const Container = styled.div(() => [
-  tw` mx-auto pt-10 font-serif min-h-screen`
+  tw` mx-auto pt-10 font-serif min-h-screen`,
+
+  css`
+    & {
+      .spotify-logo {
+        position: absolute;
+        width: 65px;
+        left: 50px;
+        top: 30px;
+        object-fit: cover;
+      }
+    }
+  `
 ]);
 
 export const LoaderWrapper = styled.div(() => [

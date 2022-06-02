@@ -21,6 +21,7 @@ import {
   PlaylistsWrapper,
   ConvertingWrapper
 } from "./styles";
+import SpotifyLogo from "assets/spotify_icon.png";
 
 function Playlists() {
   const navigate = useNavigate();
@@ -83,8 +84,10 @@ function Playlists() {
 
   const filteredPlaylists = playlists.filter(
     (playlist) =>
-      playlist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      playlist.description.toLowerCase().includes(searchTerm.toLowerCase())
+      playlist.name.toLowerCase().includes(searchTerm.toLowerCase().trim()) ||
+      playlist.description
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase().trim())
   );
 
   return (
@@ -92,6 +95,9 @@ function Playlists() {
     playlists && (
       <Container>
         <GitOcto />
+
+        <img src={SpotifyLogo} alt="Spotify's Logo" className='spotify-logo' />
+
         <Profile>
           {profile.images && profile.images[0] && profile.images[0].url ? (
             <img src={profile.images[0].url} alt={profile.display_name} />
@@ -100,6 +106,12 @@ function Playlists() {
               <NoUserIcon />
             </div>
           )}
+
+          <img
+            src={SpotifyLogo}
+            alt="Spotify's Logo"
+            className='spotify-logo'
+          />
           {profile.external_urls && (
             <h1>
               <a

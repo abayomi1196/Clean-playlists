@@ -10,8 +10,8 @@ function GitOcto() {
       rel='noreferrer'
     >
       <svg
-        width='80'
-        height='80'
+        width='120'
+        height='120'
         viewBox='0 0 250 250'
         style={{
           fill: "#70B7FD",
@@ -19,8 +19,8 @@ function GitOcto() {
           position: "absolute",
           top: 0,
           border: 0,
-          left: 0,
-          transform: "scale(-1, 1)"
+          right: 0,
+          transform: "scale(1, 1)"
         }}
         aria-hidden='true'
       >
