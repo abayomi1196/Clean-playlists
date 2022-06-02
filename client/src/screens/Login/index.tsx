@@ -4,7 +4,7 @@ import { Container } from "./styles";
 const LOGIN_URI =
   process.env.NODE_ENV !== "production"
     ? "http://localhost:8888"
-    : "https://playlist-purify.herokuapp.com/";
+    : "https://playlist-purify.herokuapp.com";
 
 function Login() {
   const loginHandler = async (): Promise<void> => {
