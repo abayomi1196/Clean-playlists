@@ -12,6 +12,7 @@ import {
   logout
 } from "api/Spotify";
 import GitOcto from "components/GitOcto";
+import SearchBar from "components/SearchBar";
 import SinglePlaylist from "components/SinglePlaylist";
 import {
   Container,
@@ -33,6 +34,11 @@ function Playlists() {
   );
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -74,6 +80,12 @@ function Playlists() {
       navigate("/");
     });
   }
+
+  const filteredPlaylists = playlists.filter(
+    (playlist) =>
+      playlist.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      playlist.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     profile &&
@@ -122,19 +134,26 @@ function Playlists() {
 
         <PlaylistsWrapper>
           <h2>Your Playlists</h2>
+          <SearchBar value={searchTerm} onChange={handleSearchChange} />
 
-          <div className='container'>
-            {playlists.map((playlist) => (
-              <SinglePlaylist
-                playlist={playlist}
-                setIsConverting={setIsConverting}
-                setProgressBarText={setProgressBarText}
-                setPlaylist={setPlaylists}
-                userId={profile.id}
-                key={playlist.id}
-              />
-            ))}
-          </div>
+          {filteredPlaylists.length ? (
+            <div className='container'>
+              {filteredPlaylists.map((playlist) => (
+                <SinglePlaylist
+                  playlist={playlist}
+                  setIsConverting={setIsConverting}
+                  setProgressBarText={setProgressBarText}
+                  setPlaylist={setPlaylists}
+                  userId={profile.id}
+                  key={playlist.id}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className='no-playlists'>
+              No playlist with name: <span>`{searchTerm}`</span>
+            </p>
+          )}
         </PlaylistsWrapper>
 
         {isConverting && (

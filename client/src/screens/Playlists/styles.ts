@@ -1,7 +1,7 @@
 import tw, { styled, css } from "twin.macro";
 
 export const Container = styled.div(() => [
-  tw`container mx-auto pt-10 font-serif`
+  tw` mx-auto pt-10 font-serif min-h-screen`
 ]);
 
 export const LoaderWrapper = styled.div(() => [
@@ -9,7 +9,7 @@ export const LoaderWrapper = styled.div(() => [
 ]);
 
 export const Profile = styled.div(() => [
-  tw`flex flex-col justify-center items-center`,
+  tw`container flex flex-col justify-center items-center mx-auto`,
 
   css`
     & {
@@ -65,13 +65,13 @@ export const Profile = styled.div(() => [
 
 export const PlaylistsWrapper = styled.div(() => [
   tw`
-  mt-16 pt-4 pb-16
+  mt-16 pt-4 pb-16 text-center container mx-auto
 `,
 
   css`
     & {
       h2 {
-        ${tw`text-2xl text-gray-200 text-center mb-5`}
+        ${tw`text-2xl text-gray-200 text-center mb-5 `}
       }
 
       .container {
@@ -83,6 +83,14 @@ export const PlaylistsWrapper = styled.div(() => [
 
         @media (min-width: 768px) {
           grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+      }
+
+      p.no-playlists {
+        ${tw`text-white text-center lg:(text-lg)`}
+
+        span {
+          ${tw`text-green-500 uppercase`}
         }
       }
     }
