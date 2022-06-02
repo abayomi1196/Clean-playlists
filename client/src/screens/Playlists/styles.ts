@@ -6,11 +6,10 @@ export const Container = styled.div(() => [
   css`
     & {
       .spotify-logo {
-        position: absolute;
-        width: 65px;
-        left: 50px;
-        top: 30px;
-        object-fit: cover;
+        ${tw`
+        w-11 object-cover absolute left-3.5 top-3.5 
+        lg:(w-16 left-12 top-7)
+        `}
       }
     }
   `
@@ -21,7 +20,8 @@ export const LoaderWrapper = styled.div(() => [
 ]);
 
 export const Profile = styled.div(() => [
-  tw`container flex flex-col justify-center items-center mx-auto`,
+  tw`container flex flex-col justify-center items-center mx-auto mt-8 
+  lg:(mt-0)`,
 
   css`
     & {
@@ -89,12 +89,12 @@ export const PlaylistsWrapper = styled.div(() => [
       .container {
         width: 100%;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         padding: 1.2em;
         gap: 4em 2em;
 
         @media (min-width: 768px) {
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         }
       }
 
