@@ -10,7 +10,7 @@ export const Wrapper = styled.div(() => [
       img {
         height: auto;
         object-fit: cover;
-        ${tw`shadow-md w-full rounded-full cursor-pointer transition-all 
+        ${tw`shadow-md w-full cursor-pointer transition-all 
         hover:(shadow-lg opacity-70)`}
       }
 

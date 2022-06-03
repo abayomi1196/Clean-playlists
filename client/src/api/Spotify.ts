@@ -126,7 +126,7 @@ export const logout = () => {
   window.location.href =
     process.env.NODE_ENV !== "production"
       ? "http://localhost:3000"
-      : "https://spotify-purify.herokuapp.com";
+      : "https://playlist-purify.herokuapp.com/";
 };
 
 // API CALLS **********************************************

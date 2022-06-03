@@ -12,6 +12,7 @@ import {
   logout
 } from "api/Spotify";
 import GitOcto from "components/GitOcto";
+import SearchBar from "components/SearchBar";
 import SinglePlaylist from "components/SinglePlaylist";
 import {
   Container,
@@ -20,6 +21,7 @@ import {
   PlaylistsWrapper,
   ConvertingWrapper
 } from "./styles";
+import SpotifyLogo from "assets/spotify_icon.png";
 
 function Playlists() {
   const navigate = useNavigate();
@@ -33,6 +35,11 @@ function Playlists() {
   );
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,11 +82,22 @@ function Playlists() {
     });
   }
 
+  const filteredPlaylists = playlists.filter(
+    (playlist) =>
+      playlist.name.toLowerCase().includes(searchTerm.toLowerCase().trim()) ||
+      playlist.description
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase().trim())
+  );
+
   return (
     profile &&
     playlists && (
       <Container>
         <GitOcto />
+
+        <img src={SpotifyLogo} alt="Spotify's Logo" className='spotify-logo' />
+
         <Profile>
           {profile.images && profile.images[0] && profile.images[0].url ? (
             <img src={profile.images[0].url} alt={profile.display_name} />
@@ -88,6 +106,12 @@ function Playlists() {
               <NoUserIcon />
             </div>
           )}
+
+          <img
+            src={SpotifyLogo}
+            alt="Spotify's Logo"
+            className='spotify-logo'
+          />
           {profile.external_urls && (
             <h1>
               <a
@@ -122,19 +146,26 @@ function Playlists() {
 
         <PlaylistsWrapper>
           <h2>Your Playlists</h2>
+          <SearchBar value={searchTerm} onChange={handleSearchChange} />
 
-          <div className='container'>
-            {playlists.map((playlist) => (
-              <SinglePlaylist
-                playlist={playlist}
-                setIsConverting={setIsConverting}
-                setProgressBarText={setProgressBarText}
-                setPlaylist={setPlaylists}
-                userId={profile.id}
-                key={playlist.id}
-              />
-            ))}
-          </div>
+          {filteredPlaylists.length ? (
+            <div className='container'>
+              {filteredPlaylists.map((playlist) => (
+                <SinglePlaylist
+                  playlist={playlist}
+                  setIsConverting={setIsConverting}
+                  setProgressBarText={setProgressBarText}
+                  setPlaylist={setPlaylists}
+                  userId={profile.id}
+                  key={playlist.id}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className='no-playlists'>
+              No playlist with name: <span>`{searchTerm}`</span>
+            </p>
+          )}
         </PlaylistsWrapper>
 
         {isConverting && (
